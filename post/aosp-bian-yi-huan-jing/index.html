@@ -1,0 +1,289 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AOSP编译环境 | Gridea</title>
+<link rel="shortcut icon" href="https://onekki.github.io/favicon.ico?v=1602207165505">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://onekki.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="AOSP编译环境 | Gridea - Atom Feed" href="https://onekki.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="AOSP编译环境
+一、涉及网址
+
+谷歌教程地址
+多亲仓库地址
+
+二、账号密码
+
+用户名 = zhuwangqi
+密码 = zhuangwangqi123
+
+三、生成ssh-key
+# 1、生成id_rsa.pub
+% ssh-keygen
+..." />
+    <meta name="keywords" content="aosp,android" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://onekki.github.io">
+  <img class="avatar" src="https://onekki.github.io/images/avatar.png?v=1602207165505" alt="">
+  </a>
+  <h1 class="site-title">
+    Gridea
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              AOSP编译环境
+            </h2>
+            <div class="post-info">
+              <span>
+                2020-09-30
+              </span>
+              <span>
+                2 min read
+              </span>
+              
+                <a href="https://onekki.github.io/tag/KQMx-V0gRI/" class="post-tag">
+                  # aosp
+                </a>
+              
+                <a href="https://onekki.github.io/tag/Iz-h8oYxzf/" class="post-tag">
+                  # android
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <h1 id="aosp编译环境">AOSP编译环境</h1>
+<h4 id="一-涉及网址">一、涉及网址</h4>
+<blockquote>
+<p><a href="https://source.android.google.cn/setup/build/initializing#setting-up-a-mac-os-x-build-environment">谷歌教程地址</a></p>
+<p><a href="http://192.168.1.221:8080/#/dashboard/self">多亲仓库地址</a></p>
+</blockquote>
+<h4 id="二-账号密码">二、账号密码</h4>
+<blockquote>
+<p>用户名 = zhuwangqi</p>
+<p>密码 = zhuangwangqi123</p>
+</blockquote>
+<h4 id="三-生成ssh-key">三、生成ssh-key</h4>
+<pre><code class="language-shell"># 1、生成id_rsa.pub
+% ssh-keygen
+# 2、打印id_rsa.pub
+% cat .ssh/id_rsa.pub
+</code></pre>
+<p>拷贝打印的公钥到多亲仓库的个人设置里添加到ssh的key, 之后可以从局域网仓库下载代码了</p>
+<pre><code class="language-shell">% git clone -b duoqin_dev ssh://zhuwangqi@192.168.1.221:29418/9863.git
+</code></pre>
+<p>lunch步骤选择下面的rom</p>
+<pre><code class="language-shell">% lunch s9863a1h10_Natv-userdebug-native
+</code></pre>
+<p>make</p>
+<pre><code class="language-shell">% make -j&lt;N&gt; 2&gt;&amp;1 | tee build_&lt;TIME&gt;.log
+</code></pre>
+<p>N = 使用的线程数量</p>
+<p>TIME = 当前的时间</p>
+<h4 id="四-踩坑">四、踩坑</h4>
+<ul>
+<li>
+<p><strong>macOS</strong></p>
+<p>可以编译aosp源码，但是无法编译duoqin_dev的代码</p>
+</li>
+<li>
+<p><strong>docker</strong></p>
+<p>环境下的ubuntu安装了jdk8和aosp编译的相关依赖后，重新启动容器后，lunch总会出现缺少文件的错误</p>
+</li>
+<li>
+<p><strong>virtual-box</strong></p>
+<ul>
+<li>
+<p>使用virtual-box共享目录时, 要启用软链接, 开启步骤:</p>
+<p>1⃣️ 允许某共享文件夹的软链接</p>
+<pre><code class="language-shell">% VBoxManage setextradata &lt;VM_NAME&gt; VBoxInternal2/SharedFoldersEnableSymlinksCreate/&lt;SHARE_FOLDER_NAME&gt; 1
+</code></pre>
+<p>VM_NAME: 虚拟机的名字<br>
+SHARE_FOLDER_NAME: 共享文件夹的名字(不是地址)</p>
+<p>2⃣️ 验证设置是否成功</p>
+<pre><code class="language-shell">% VBoxManage getextradata YOURVMNAME enumerate
+</code></pre>
+<p>如果设置成功了应该会显示:</p>
+<blockquote>
+<p>Key:VBoxInternal2/SharedFoldersEnableSymlinksCreate/YOURSHAREFOLDERNAME,Value:1</p>
+</blockquote>
+</li>
+<li>
+<p>编译过程出现error : openssl/bio.h :No such file or folder</p>
+<pre><code class="language-shell">% sudo apt install libssl-dev
+</code></pre>
+</li>
+<li>
+<p>以上问题解决后编译仍然出现错误:</p>
+<blockquote>
+<p>ImportError: No module named Crypto.Signature</p>
+</blockquote>
+<p>解决方法:</p>
+<pre><code class="language-shell"># 卸载apt的crypto软件包
+% sudo apt remove python-crypto
+# 安装pip
+% sudo apt install python-pip
+# 安装pycrypto
+% sudo pip install pycrypto
+</code></pre>
+</li>
+<li>
+<p>出现错误</p>
+<blockquote>
+<p>ninja failed with: signal: killed</p>
+</blockquote>
+<p>解决方法:</p>
+<blockquote>
+<p>调大内存大小</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li>
+<p>PS</p>
+<blockquote>
+<p>不应该使用共享文件夹, 包括docker也不应该使用bind方式挂载目录, 因为会极大的降低I/O速度, 从而降低编译速度</p>
+</blockquote>
+</li>
+</ul>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#aosp%E7%BC%96%E8%AF%91%E7%8E%AF%E5%A2%83">AOSP编译环境</a><br>
+*<br>
+*<br>
+* <a href="#%E4%B8%80-%E6%B6%89%E5%8F%8A%E7%BD%91%E5%9D%80">一、涉及网址</a><br>
+* <a href="#%E4%BA%8C-%E8%B4%A6%E5%8F%B7%E5%AF%86%E7%A0%81">二、账号密码</a><br>
+* <a href="#%E4%B8%89-%E7%94%9F%E6%88%90ssh-key">三、生成ssh-key</a><br>
+* <a href="#%E5%9B%9B-%E8%B8%A9%E5%9D%91">四、踩坑</a></li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://onekki.github.io/post/ubuntu-fu-wu-qi-huan-jing-pei-zhi/">
+              <h3 class="post-title">
+                Ubuntu服务器环境配置
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://onekki.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

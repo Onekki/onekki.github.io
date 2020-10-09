@@ -1,0 +1,327 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mysql环境配置 | Gridea</title>
+<link rel="shortcut icon" href="https://onekki.github.io/favicon.ico?v=1602207165505">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://onekki.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Mysql环境配置 | Gridea - Atom Feed" href="https://onekki.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="一、开启远程连接
+
+查看host、user
+
+use mysql;
+
+
+然后输入：
+
+update user set host = '%' where user = 'root';
+
+重启mysql
+二、设置字符集
+
+修改mysql配置文件..." />
+    <meta name="keywords" content="mysql" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://onekki.github.io">
+  <img class="avatar" src="https://onekki.github.io/images/avatar.png?v=1602207165505" alt="">
+  </a>
+  <h1 class="site-title">
+    Gridea
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Mysql环境配置
+            </h2>
+            <div class="post-info">
+              <span>
+                2020-09-30
+              </span>
+              <span>
+                4 min read
+              </span>
+              
+                <a href="https://onekki.github.io/tag/VZXPv0fsKl/" class="post-tag">
+                  # mysql
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <h1 id="一-开启远程连接">一、开启远程连接</h1>
+<blockquote>
+<p>查看host、user</p>
+</blockquote>
+<pre><code class="language-mysql">use mysql;
+</code></pre>
+<blockquote>
+<p>然后输入：</p>
+</blockquote>
+<pre><code class="language-mysql">update user set host = '%' where user = 'root';
+</code></pre>
+<p>重启mysql</p>
+<h1 id="二-设置字符集">二、设置字符集</h1>
+<blockquote>
+<p>修改mysql配置文件（记住是mysql.cnf，不是my.cnf）</p>
+</blockquote>
+<pre><code class="language-shell"># 修改copy来的配置文件
+$ /etc/mysql/conf.d/mysql.cnf
+
+# 添加
+[mysqld]
+character_set_server=utf8
+</code></pre>
+<h1 id="三-创建普通用户">三、创建普通用户</h1>
+<p>增加用户用户指定可以任意IP登录，如果想限制只能让指定IP登录请把%替换成IP地址</p>
+<pre><code class="language-mysql">CREATE USER 'newUserName'@'%' IDENTIFIED BY '你的密码';
+</code></pre>
+<p>给新添加的普通用户增加权限</p>
+<pre><code class="language-mysql">GRANT ALL PRIVILEGES ON * . * TO '普通用户'@'%' IDENTIFIED BY '你的密码' WITH GRANT OPTION MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0;
+</code></pre>
+<h1 id="mysql的相关操作">mysql的相关操作</h1>
+<h2 id="删除mysql">删除mysql</h2>
+<pre><code>sudo apt-get autoremove --purge mysql-server-5.0  
+sudo apt-get remove mysql-server  
+sudo apt-get autoremove mysql-server  
+sudo apt-get remove mysql-common //这个很重要
+</code></pre>
+<p>上面的其实有一些是多余的。<br>
+清理残留数据</p>
+<pre><code>dpkg -l |grep ^rc|awk '{print $2}' |sudo xargs dpkg -P
+</code></pre>
+<h2 id="安装mysql">安装mysql</h2>
+<p>安装,mysql-client也可以不安装</p>
+<pre><code>sudo apt-get install mysql-server
+sudo apt-get install mysql-client
+</code></pre>
+<p>一旦安装完成，MySQL服务器应该自动启动。您可以在终端提示符后运行以下命令来检查 MySQL 服务器是否正在运行：</p>
+<pre><code>sudo netstat -tap | grep mysql
+</code></pre>
+<p>结果是：</p>
+<blockquote>
+<p>tcp 0 0 localhost.localdomain:mysql <em>:</em> LISTEN -</p>
+</blockquote>
+<h2 id="进入mysql">进入mysql</h2>
+<pre><code>mysql -uroot -p 管理员密码
+//需要说明的是密码在/etc/mysql/debain.cnf里面
+</code></pre>
+<h2 id="mysql的启动停止重启">mysql的启动/停止/重启</h2>
+<pre><code>//启动MySQL
+sudo service mysql start
+//脚本方式:/etc/init.d/mysql start
+
+//停用MySQL
+sudo service mysql stop
+//脚本方式:/etc/init.d/mysql stop
+
+//停用MySQL
+sudo service mysql restart
+//脚本方式:/etc/init.d/mysql restart
+</code></pre>
+<h2 id="mysql创建普通用户">mysql创建普通用户</h2>
+<p>增加用户用户指定可以任意IP登录，如果想限制只能让指定IP登录请把%替换成IP地址</p>
+<pre><code>CREATE USER 'newUserName'@'%' IDENTIFIED BY '你的密码';
+</code></pre>
+<p>给新添加的普通用户增加权限</p>
+<pre><code>GRANT ALL PRIVILEGES ON * . * TO '普通用户'@'%' IDENTIFIED BY '你的密码' WITH GRANT OPTION MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0;
+</code></pre>
+<h2 id="mysql配置文件">mysql配置文件</h2>
+<p>首先查看mysql在哪</p>
+<pre><code>which mysql
+</code></pre>
+<p>结果</p>
+<blockquote>
+<p>/usr/bin/mysql</p>
+</blockquote>
+<p>接下来就可以针对这个目录通过一些命令查看配置文件在哪了，如下</p>
+<pre><code>/usr/bin/mysql --verbose --help | grep -A 1 'Default options'
+</code></pre>
+<p>结果</p>
+<blockquote>
+<p>Default options are read from the following files in the given order:<br>
+/etc/my.cnf /etc/mysql/my.cnf ~/.my.cnf</p>
+</blockquote>
+<p>这个信息的意思是：<br>
+服务器首先读取的是/etc/mysql/my.cnf文件，如果前一个文件不存在则继续读/etc/my.cnf文件，如若还不存在便会去读~/.my.cnf文件</p>
+<h2 id="开启远程连接">开启远程连接</h2>
+<p>查看3306端口是否正常</p>
+<pre><code>netstat -an|grep 3306 
+</code></pre>
+<p>结果</p>
+<blockquote>
+<p>tcp        0      0 127.0.0.1:3306          0.0.0.0:*               LISTEN</p>
+</blockquote>
+<p>修改mysql配置文件（记住是mysqld.cnf，不是my.cnf）</p>
+<pre><code>vi /etc/mysql/mysql.conf.d/mysqld.cnf 
+</code></pre>
+<p>将bind-address=127.0.0.1这句注释掉</p>
+<p>再次查看端口信息</p>
+<pre><code>netstat -an|grep 3306 
+</code></pre>
+<p>结果</p>
+<blockquote>
+<p>tcp6       0      0 :::3306                 ::😗                    LISTEN</p>
+</blockquote>
+<h2 id="开启远程连接-2">开启远程连接</h2>
+<p>查看host、user</p>
+<pre><code>use mysql;
+</code></pre>
+<p>然后输入：</p>
+<pre><code>update user set host = '%' where user = 'root';
+</code></pre>
+<p>重启mysql</p>
+<h2 id="设置字符集">设置字符集</h2>
+<p>修改mysql配置文件（记住是mysqld.cnf，不是my.cnf）</p>
+<pre><code>vi /etc/mysql/mysql.conf.d/mysqld.cnf 
+</code></pre>
+<p>在[mysqld]中添加character_set_server=utf8</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#%E4%B8%80-%E5%BC%80%E5%90%AF%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5">一、开启远程连接</a></li>
+<li><a href="#%E4%BA%8C-%E8%AE%BE%E7%BD%AE%E5%AD%97%E7%AC%A6%E9%9B%86">二、设置字符集</a></li>
+<li><a href="#%E4%B8%89-%E5%88%9B%E5%BB%BA%E6%99%AE%E9%80%9A%E7%94%A8%E6%88%B7">三、创建普通用户</a></li>
+<li><a href="#mysql%E7%9A%84%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C">mysql的相关操作</a>
+<ul>
+<li><a href="#%E5%88%A0%E9%99%A4mysql">删除mysql</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85mysql">安装mysql</a></li>
+<li><a href="#%E8%BF%9B%E5%85%A5mysql">进入mysql</a></li>
+<li><a href="#mysql%E7%9A%84%E5%90%AF%E5%8A%A8%E5%81%9C%E6%AD%A2%E9%87%8D%E5%90%AF">mysql的启动/停止/重启</a></li>
+<li><a href="#mysql%E5%88%9B%E5%BB%BA%E6%99%AE%E9%80%9A%E7%94%A8%E6%88%B7">mysql创建普通用户</a></li>
+<li><a href="#mysql%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">mysql配置文件</a></li>
+<li><a href="#%E5%BC%80%E5%90%AF%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5">开启远程连接</a></li>
+<li><a href="#%E5%BC%80%E5%90%AF%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5-2">开启远程连接</a></li>
+<li><a href="#%E8%AE%BE%E7%BD%AE%E5%AD%97%E7%AC%A6%E9%9B%86">设置字符集</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://onekki.github.io/post/docker-huan-jing-pei-zhi/">
+              <h3 class="post-title">
+                Docker环境配置
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://onekki.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,814 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Docker环境配置 | Gridea</title>
+<link rel="shortcut icon" href="https://onekki.github.io/favicon.ico?v=1602207165505">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://onekki.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Docker环境配置 | Gridea - Atom Feed" href="https://onekki.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="一、注意事项
+(一)关于文章内容
+
+
+命令行中()表示可选参数; &lt;&gt;表示变量
+配置文件均放在了/home//.docker/
+其他放在volume和其他位置
+
+
+(二)几个目录
+&lt;volume&gt;=/var/lib/..." />
+    <meta name="keywords" content="docker" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://onekki.github.io">
+  <img class="avatar" src="https://onekki.github.io/images/avatar.png?v=1602207165505" alt="">
+  </a>
+  <h1 class="site-title">
+    Gridea
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Docker环境配置
+            </h2>
+            <div class="post-info">
+              <span>
+                2020-09-30
+              </span>
+              <span>
+                11 min read
+              </span>
+              
+                <a href="https://onekki.github.io/tag/EKBMjYLPPp/" class="post-tag">
+                  # docker
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <h1 id="一-注意事项">一、注意事项</h1>
+<h2 id="一关于文章内容">(一)关于文章内容</h2>
+<blockquote>
+<ul>
+<li>命令行中()表示可选参数; &lt;&gt;表示变量</li>
+<li>配置文件均放在了/home/<user>/.docker/</li>
+<li>其他放在volume和其他位置</li>
+</ul>
+</blockquote>
+<h2 id="二几个目录">(二)几个目录</h2>
+<pre><code class="language-shell">&lt;volume&gt;=/var/lib/docker/volumes/&lt;volume&gt; 
+&lt;dst&gt;=/var/lib/&lt;dst&gt;
+</code></pre>
+<h2 id="三创建容器后排错">(三)创建容器后排错</h2>
+<pre><code class="language-shell"># 查看卷有没有创建
+$ docker volume ls
+</code></pre>
+<pre><code class="language-shell"># 查看库是否创建
+$ ls /var/lib/docker/volums/&lt;volume&gt;/_data/
+</code></pre>
+<pre><code class="language-shell"># 查看日志
+$ docker logs &lt;container&gt;
+</code></pre>
+<pre><code class="language-shell"># 查看绑定的端口
+$ docker ps
+</code></pre>
+<h1 id="二-docker相关官方网站">二、docker相关官方网站</h1>
+<blockquote>
+<ul>
+<li>Docker Hub</li>
+</ul>
+<p>https://hub.docker.com</p>
+<ul>
+<li>Docker Hub</li>
+</ul>
+<p><a href="https://hub.docker.com/">https://hub.docker.com</a></p>
+<ul>
+<li>Docker Doc</li>
+</ul>
+<p>https://docs.docker.com](https://docs.docker.com/)</p>
+<ul>
+<li>镜像</li>
+</ul>
+<p><a href="https://hub.docker.com/explore">https://hub.docker.com/explore</a></p>
+</blockquote>
+<h1 id="三-基础配置">三、基础配置</h1>
+<h2 id="一配置docker镜像下载仓库地址">(一)配置docker镜像下载仓库地址</h2>
+<h3 id="1-编辑deamonjson">1、编辑deamon.json</h3>
+<pre><code class="language-shell">$ vi /etc/docker/deamon.json
+
+{
+  &quot;registry-missors&quot;: [&quot;https://registry.docker-cn.com&quot;]
+}
+</code></pre>
+<h3 id="2-重启docker">2、重启docker</h3>
+<pre><code class="language-shell">$ systemctl restart docker
+</code></pre>
+<h1 id="四-命令行">四、命令行</h1>
+<h2 id="一镜像images">(一)镜像(images)</h2>
+<h3 id="1-删除镜像">1、删除镜像</h3>
+<pre><code class="language-shell"># 删除某个
+$ docker rmi &lt;image&gt;
+# 删除所有
+$ docker rmi $(docker images -q)
+</code></pre>
+<h2 id="二容器container">(二)容器(container)</h2>
+<blockquote>
+<p>常用</p>
+</blockquote>
+<h3 id="1-创建容器">1、创建容器</h3>
+<pre><code class="language-shell"># -i 交互式 -t 分配一个伪终端 -d 运行容器到后台
+$ docker container run -itd - &lt;container&gt; &lt;image&gt;
+</code></pre>
+<h3 id="2-删除容器">2、删除容器</h3>
+<pre><code class="language-shell"># 删除某个容器
+$ docker rm -f &lt;container-name&gt;
+$ docker volume rm &lt;volume-name&gt;
+# 删除所有容器
+$ docker rm -f $(docker ps -q -a)
+$ docker volume rm -f $(docker volume ls)
+</code></pre>
+<h3 id="3-进入容器的伪终端">3、进入容器的伪终端</h3>
+<pre><code class="language-shell">$ docker exec -it &lt;container-name&gt; bash
+</code></pre>
+<h3 id="4-查看所有容器">4、查看所有容器</h3>
+<pre><code class="language-shell"># 只看id
+$ docker ps -q -a
+# 查看所有信息
+$ docker ps -a
+</code></pre>
+<h3 id="5-启动容器">5、启动容器</h3>
+<pre><code class="language-shell">$ docker container start &lt;container-name&gt;
+</code></pre>
+<h3 id="6-查看当前运行的容器">6、查看当前运行的容器</h3>
+<pre><code class="language-shell">$ docker ps
+</code></pre>
+<pre><code class="language-shell">$ docker container ls
+</code></pre>
+<h3 id="7-进入容器">7、进入容器</h3>
+<pre><code class="language-shell">$ docker container attach &lt;container-name&gt;
+</code></pre>
+<h3 id="8-拷贝文件到容器不推荐使用">8、拷贝文件到容器(不推荐使用)</h3>
+<pre><code class="language-shell">$ docker container cp &lt;file&gt; &lt;container-name&gt;:&lt;path&gt;
+</code></pre>
+<pre><code class="language-shell">$ docker container cp &lt;container-name&gt;:&lt;path&gt; &lt;file&gt;
+</code></pre>
+<h2 id="三卷volumes">(三)卷(volumes)</h2>
+<h3 id="1-创建volume">1、创建volume</h3>
+<pre><code class="language-shell">$ docker volume create &lt;volume&gt;
+</code></pre>
+<h3 id="2-列出所有volume">2、列出所有volume</h3>
+<pre><code class="language-shell">$ docker volume ls
+</code></pre>
+<h3 id="3-查看某个volume">3、查看某个volume</h3>
+<pre><code class="language-shell">$ docker volume inspect &lt;volume&gt;
+</code></pre>
+<h3 id="4-挂载volume到container">4、挂载volume到container</h3>
+<pre><code class="language-shell">$ docker run -idt - &lt;container&gt; --mount src=&lt;volume&gt;,dst=&lt;dst&gt; &lt;image&gt;
+</code></pre>
+<h3 id="5-清理">5、清理</h3>
+<pre><code class="language-shell">$ docker container stop &lt;container&gt;
+$ docker container rm &lt;container&gt;
+$ docker volume rm &lt;volume&gt;
+</code></pre>
+<h3 id="6-验证绑定">6、验证绑定</h3>
+<pre><code class="language-shell">$ docker inspect &lt;container&gt;
+</code></pre>
+<h3 id="7-查看挂载目录">7、查看挂载目录</h3>
+<pre><code class="language-shell"># 容器的
+$ docker inspect --format &quot;{{.Config.Volumes}}&quot; &lt;container&gt;
+
+# 宿主机的
+$ docker inspect -f &quot;{{.Mounts}}&quot; &lt;container&gt;
+</code></pre>
+<h2 id="四快速清理容器和卷">(四)快速清理容器和卷</h2>
+<pre><code class="language-shell"># 单个 例如 删除con-mysql 则 con=mysql
+# $con=&quot;mysql&quot;
+$ con=&quot;nginx&quot; \
+&amp;&amp; docker container stop &quot;con-&quot;$con \
+&amp;&amp; docker container rm &quot;con-&quot;$con \
+&amp;&amp; docker volume rm &quot;vol-&quot;$con
+</code></pre>
+<pre><code class="language-shell"># 所有
+$ docker container stop $(docker ps -q -a) \
+&amp;&amp; docker container rm $(docker ps -q -a) \
+&amp;&amp; docker volume rm $(docker volume ls)
+</code></pre>
+<pre><code class="language-shell"># 出现volume正在使用的话
+$ sudo service docker stop 
+$ rm -rf /var/lib/docker/volumes/&lt;volume&gt;
+$ sudo service docker start
+</code></pre>
+<h1 id="五-dockerfile">五、Dockerfile</h1>
+<h2 id="一-dockerfile的指令">(一) Dockerfile的指令</h2>
+<h3 id="1-from">1、FROM</h3>
+<blockquote>
+<p>构建的新镜像基于哪个镜像</p>
+</blockquote>
+<pre><code class="language-shell"># &lt;image&gt; centos:7 ubuntu:16.04
+FROM &lt;image&gt;
+</code></pre>
+<h3 id="2-maintainer">2、MAINTAINER</h3>
+<blockquote>
+<p>镜像维护者姓名或邮箱地址</p>
+</blockquote>
+<pre><code class="language-shell">MAINTAINER &lt;name&gt;
+</code></pre>
+<h3 id="3-run">3、RUN</h3>
+<blockquote>
+<p>构建镜像时运行的shell命令</p>
+</blockquote>
+<pre><code class="language-shell"># centos
+RUN [&quot;yum&quot;, &quot;install&quot;, &quot;httpd&quot;]
+# or
+RUN yum install httpd
+# ubuntu
+RUN [&quot;apt-get&quot;, &quot;install&quot;, &quot;httpd&quot;]
+# or
+RUN apt-get install httpd
+</code></pre>
+<h3 id="4-cmd">4、CMD</h3>
+<blockquote>
+<p>运行容器时执行的shell命令</p>
+</blockquote>
+<pre><code class="language-shell">CMD [&quot;/usr/sbin/sshd&quot;, &quot;-D&quot;]
+CMD /usr/sbin/sshd -D
+</code></pre>
+<h3 id="5-expose">5、EXPOSE</h3>
+<blockquote>
+<p>申明容器运行服务的端口</p>
+</blockquote>
+<pre><code class="language-shell">EXPOSE &lt;port&gt;
+</code></pre>
+<h3 id="6-env">6、ENV</h3>
+<blockquote>
+<p>设置容器内环境变量</p>
+</blockquote>
+<pre><code class="language-shell">ENV MYSQL_ROOT_PASSWORD 123456
+</code></pre>
+<h3 id="7-add">7、ADD</h3>
+<blockquote>
+<p>拷贝文件或者目录到镜像, 如果时URL或压缩包会自动下载或者解压</p>
+</blockquote>
+<pre><code class="language-shell">ADD &lt;src&gt; &lt;dst&gt;
+ADD [&quot;&lt;src&gt;&quot;, &quot;&lt;dst&gt;&quot;]
+ADD https://xxx.xxx.xx/file.tar.gz /tmp/ # 不推荐
+ADD /file.tar.gz /var/www/html
+</code></pre>
+<h3 id="8-copy">8、COPY</h3>
+<blockquote>
+<p>在宿主机和容器之间拷贝文件</p>
+</blockquote>
+<pre><code class="language-shell">COPY &lt;src&gt; &lt;dst&gt;
+</code></pre>
+<h3 id="9-entrypoint">9、ENTRYPOINT</h3>
+<blockquote>
+<p>运行容器时执行的shell命令</p>
+<p>可以将CMD的命令作为参数执行</p>
+</blockquote>
+<pre><code class="language-shell">ENTRYPOINT [&quot;/bin/bash&quot;, &quot;-c&quot;, &quot;./start.sh&quot;]
+ENTRYPOINT /bin/bash -c ./start.sh
+</code></pre>
+<h3 id="10-volume">10、VOLUME</h3>
+<blockquote>
+<p>指定容器挂载点到宿主机自动生成的目录或其他容器</p>
+</blockquote>
+<pre><code class="language-shell"># 略
+</code></pre>
+<h3 id="11-user">11、USER</h3>
+<blockquote>
+<p>为RUN、CMD、ENTRYPOINT执行命令指定运行用户</p>
+</blockquote>
+<pre><code class="language-shell">USER &lt;user&gt;[:&lt;group&gt;]
+# or
+USER &lt;UID&gt;[:GID]
+</code></pre>
+<h3 id="12-workdir">12、WORKDIR</h3>
+<blockquote>
+<p>为RUN、CMD、ENTRYPOINT、COPY设置进入容器时默认的工作目录</p>
+</blockquote>
+<pre><code class="language-shell">WORKDIR /home/workspace
+</code></pre>
+<h3 id="13-healthcheck">13、HEALTHCHECK</h3>
+<blockquote>
+<p>健康检查</p>
+</blockquote>
+<pre><code class="language-shell"># 略
+</code></pre>
+<h3 id="14-arg">14、ARG</h3>
+<blockquote>
+<p>构建镜像时指定一些参数</p>
+</blockquote>
+<pre><code class="language-shell">FROM centos:7
+ARG user #ARG user=root
+USER $user
+...
+# docker build --build-arg user=&lt;user&gt; &lt;Dockerfile&gt;
+</code></pre>
+<h2 id="二build镜像命令">(二)Build镜像命令</h2>
+<pre><code class="language-shell"># OPTIONS:
+# -t, --tag list 		#镜像名称
+# -f, --file string #指定Dockerfile文件位置
+$ docker image build [OPTIONS] PATH | URL | -
+# 例如
+$ docker build .
+$ docker build -t &lt;image&gt; .
+$ docker build -t &lt;image&gt;:&lt;tag&gt; . -f &lt;Dockerfile&gt; &lt;context-path&gt;
+</code></pre>
+<h2 id="三部署过程">(三)部署过程</h2>
+<h3 id="1-自定义网络">1、自定义网络</h3>
+<pre><code class="language-shell">$ docker network create &lt;network&gt;
+</code></pre>
+<h3 id="2-创建所需容器a">2、创建所需容器A</h3>
+<pre><code class="language-shell">$ docker run -itd \
+--name &lt;container-a&gt; \
+--net &lt;network&gt; \
+-p &lt;host-port&gt;:&lt;container-port&gt; \
+--mount type=bind,src=&lt;volume&gt;,dst=&lt;dst&gt; \
+&lt;image-a&gt;:&lt;tag-a&gt;
+</code></pre>
+<h3 id="3-创建所需容器b">3、创建所需容器B</h3>
+<pre><code class="language-shell"># 略
+</code></pre>
+<h1 id="六-docker镜像仓库">六、docker镜像仓库</h1>
+<h2 id="一搭建私有镜像仓库">(一)搭建私有镜像仓库</h2>
+<h3 id="1-下载registry镜像并启动">1、下载registry镜像并启动</h3>
+<pre><code class="language-shell">$ docker pull registry
+$ docker run -d -v /opt/registry:/var/lib/registry -p 5000:5000 --restart=always - registry registry
+</code></pre>
+<h3 id="2-查看镜像仓库中所有镜像">2、查看镜像仓库中所有镜像</h3>
+<pre><code class="language-shell">$ curl http://&lt;remote-host&gt;:5000/v2/_catalog
+</code></pre>
+<h3 id="3-配置私有仓库信任">3、配置私有仓库信任</h3>
+<pre><code class="language-shell">$ vi /etc/docker/daemon.json
+</code></pre>
+<pre><code class="language-json">{
+  &quot;insecure-registries&quot;:[&quot;&lt;remote-host&gt;:5000&quot;]
+}
+</code></pre>
+<pre><code class="language-shell">$ systemctl restart docker
+</code></pre>
+<h3 id="4-打标签">4、打标签</h3>
+<pre><code class="language-shell">$ docker tag &lt;image&gt; &lt;remote-host&gt;:5000/&lt;image&gt;:&lt;tag&gt;
+</code></pre>
+<h3 id="5-上传">5、上传</h3>
+<pre><code class="language-shell">$ docker push &lt;remote-host&gt;:5000/&lt;image&gt;:&lt;tag&gt;
+
+</code></pre>
+<h3 id="6-下载">6、下载</h3>
+<pre><code class="language-shell">$ docker pull &lt;remote-host&gt;:5000/&lt;image&gt;:&lt;tag&gt;
+</code></pre>
+<h3 id="7-列出镜像表">7、列出镜像表</h3>
+<pre><code class="language-shell">$ curl http:&lt;remote-host&gt;:5000/v2/&lt;image&gt;/tags/list
+</code></pre>
+<h2 id="二docker-hub公共仓库的使用">(二)Docker Hub公共仓库的使用</h2>
+<h3 id="1-注册账号">1、注册账号</h3>
+<blockquote>
+<p>https://hub.docker.com</p>
+</blockquote>
+<h3 id="2-登录docker-hub">2、登录Docker Hub</h3>
+<pre><code class="language-shell">$ docker login
+</code></pre>
+<pre><code class="language-shell">$ docker login --username=&lt;username&gt; --password=&lt;password&gt;
+</code></pre>
+<h3 id="3-镜像打标签">3、镜像打标签</h3>
+<pre><code class="language-shell">$ docker tag &lt;image&gt;:&lt;tag&gt; &lt;username&gt;/&lt;image&gt;:&lt;tag&gt;
+</code></pre>
+<h3 id="4-上传">4、上传</h3>
+<pre><code class="language-shell">$ docker push &lt;username&gt;/&lt;image&gt;:&lt;tag&gt;
+</code></pre>
+<h3 id="5-搜索">5、搜索</h3>
+<pre><code class="language-shell">$ docker search &lt;username&gt;
+</code></pre>
+<h3 id="6-下载-2">6、下载</h3>
+<pre><code class="language-shell">$ docker pull &lt;username&gt;/&lt;image&gt;:&lt;tag&gt;
+</code></pre>
+<h1 id="七-实战">七、实战</h1>
+<h2 id="一搭建flask网站">(一)搭建flask网站</h2>
+<h3 id="1-dockerfile">1、Dockerfile</h3>
+<pre><code class="language-shell"># Dockerfile内容
+...
+</code></pre>
+<pre><code class="language-shell"># build Dockerfile
+
+</code></pre>
+<p>###2、创建网络</p>
+<pre><code class="language-shell">$ docker network create &lt;network&gt;
+</code></pre>
+<h2 id="3-需要的容器">3、需要的容器</h2>
+<blockquote>
+<p>通用命令</p>
+</blockquote>
+<pre><code class="language-shell">$ docker run -itd \
+--name &lt;container&gt; \
+--net &lt;network&gt; \
+-p &lt;host-port&gt;:&lt;container-port&gt; \
+--mount (type=bind),src=&lt;volume&gt;,dst=&lt;dst&gt; \
+&lt;image&gt;:&lt;tag&gt;
+</code></pre>
+<h2 id="一mysql">(一)mysql</h2>
+<h3 id="1-配置文件">1、配置文件</h3>
+<pre><code class="language-shell"># 修改copy来的配置文件
+$ sudo vi /root/docker/mysql/mysql.cnf
+
+
+#通常都是字符集与端口的配置
+[client]       
+default-character-set=utf8
+[mysql]   
+default-character-set=utf8
+[mysqld]
+character_set_server=utf8
+# sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
+# 配置大小写不敏感
+# lower_case_table_names=1
+</code></pre>
+<p>###2、安装mysql容器</p>
+<pre><code class="language-shell"># 命令来源于官网
+$ docker run - some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:tag
+</code></pre>
+<blockquote>
+<p>根据下面安装方法可以跳过第二个步骤</p>
+</blockquote>
+<pre><code class="language-shell"># 实际使用
+# &lt;volume-path&gt;=/var/lib/docker/volumes/mysql 
+# &lt;dst&gt;=/var/lib/mysql
+$ docker run -itd \
+--name con-mysql \
+-p 3306:3306 \
+-v vol-mysql:/var/lib/mysql \
+-v /opt/docker/mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf \
+-e MYSQL_ROOT_PASSWORD=123456 \
+mysql:5.7
+</code></pre>
+<h2 id="二redis">(二)redis</h2>
+<h3 id="1-配置文件-2">1、配置文件</h3>
+<pre><code class="language-shell"># bind 127.0.0.1
+# protected-mode no
+appendonly yes//持久化
+# requirepass yourpassword
+</code></pre>
+<h3 id="2-安装">2、安装</h3>
+<pre><code class="language-shell"># 官网
+$ docker run --name some-redis -d redis redis-server --appendonly yes
+</code></pre>
+<pre><code class="language-shell"># 实际使用
+$ docker run -itd \
+--name con-redis \
+-p 6379:6379 \
+-v vol-redis:/data \
+-v /opt/docker/redis/redis.conf:/usr/local/etc/redis/redis.conf \
+redis:5.0 \
+redis-server /usr/local/etc/redis/redis.conf
+</code></pre>
+<h2 id="三python的flaskonekkisite">(三)python的flask(OnekkiSite)</h2>
+<p>###1、Dockerfile</p>
+<pre><code class="language-shell">FROM python:3.7
+
+ADD ./OnekkiSite /var/www/onekki.xyz/OnekkiSite
+
+WORKDIR /var/www/onekki.xyz/OnekkiSite
+
+RUN pip install -r requirements.txt
+
+CMD [&quot;python&quot;, &quot;manager.py&quot;, &quot;server&quot;]
+</code></pre>
+<h3 id="2-创建容器">2、创建容器</h3>
+<pre><code class="language-shell">docker run -itd \
+--name con-onekki.xyz \
+-p 5000:5000 \
+-v /opt/docker/onekki.xyz/OnekkiSite:/var/www/onekki.xyz/OnekkiSite \
+onekki.xyz:1.0.0
+</code></pre>
+<h2 id="四nginx">(四)nginx</h2>
+<h3 id="安装">安装</h3>
+<pre><code class="language-shell"># 官网
+$ docker run --name some-nginx -d -p 8080:80 some-content-nginx
+</code></pre>
+<pre><code class="language-shell"># 实际使用
+$ docker run -itd \
+--name con-nginx \
+-p 80:80 \
+-v /opt/docker/nginx/html:/usr/share/nginx/html \
+-v /opt/docker/nginx/nginx.conf:/etc/nginx/nginx.conf \
+--link con-onekki.xyz \
+nginx:1.16
+</code></pre>
+<pre><code class="language-shell"># /opt/docker/nginx/nginx.conf
+server {
+	listen 80; 
+	server_name 39.107.230.35;
+
+  location / {
+  	proxy_pass  http://con-onekki.xyz:5000;
+  }
+  access_log  /var/log/nginx/access.log  main;
+}
+</code></pre>
+<pre><code class="language-shell"># 默认
+# cat /etc/nginx/conf.d/default.conf 
+server {
+    listen       80;
+    server_name  localhost;
+
+    #charset koi8-r;
+    #access_log  /var/log/nginx/host.access.log  main;
+
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+    # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+    #
+    #location ~ \.php$ {
+    #    proxy_pass   http://127.0.0.1;
+    #}
+
+    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+    #
+    #location ~ \.php$ {
+    #    root           html;
+    #    fastcgi_pass   127.0.0.1:9000;
+    #    fastcgi_index  index.php;
+    #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
+    #    include        fastcgi_params;
+    #}
+
+    # deny access to .htaccess files, if Apache's document root
+    # concurs with nginx's one
+    #
+    #location ~ /\.ht {
+    #    deny  all;
+    #}
+}
+
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#%E4%B8%80-%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9">一、注意事项</a>
+<ul>
+<li><a href="#%E4%B8%80%E5%85%B3%E4%BA%8E%E6%96%87%E7%AB%A0%E5%86%85%E5%AE%B9">(一)关于文章内容</a></li>
+<li><a href="#%E4%BA%8C%E5%87%A0%E4%B8%AA%E7%9B%AE%E5%BD%95">(二)几个目录</a></li>
+<li><a href="#%E4%B8%89%E5%88%9B%E5%BB%BA%E5%AE%B9%E5%99%A8%E5%90%8E%E6%8E%92%E9%94%99">(三)创建容器后排错</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-docker%E7%9B%B8%E5%85%B3%E5%AE%98%E6%96%B9%E7%BD%91%E7%AB%99">二、docker相关官方网站</a></li>
+<li><a href="#%E4%B8%89-%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE">三、基础配置</a>
+<ul>
+<li><a href="#%E4%B8%80%E9%85%8D%E7%BD%AEdocker%E9%95%9C%E5%83%8F%E4%B8%8B%E8%BD%BD%E4%BB%93%E5%BA%93%E5%9C%B0%E5%9D%80">(一)配置docker镜像下载仓库地址</a>
+<ul>
+<li><a href="#1-%E7%BC%96%E8%BE%91deamonjson">1、编辑deamon.json</a></li>
+<li><a href="#2-%E9%87%8D%E5%90%AFdocker">2、重启docker</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-%E5%91%BD%E4%BB%A4%E8%A1%8C">四、命令行</a>
+<ul>
+<li><a href="#%E4%B8%80%E9%95%9C%E5%83%8Fimages">(一)镜像(images)</a>
+<ul>
+<li><a href="#1-%E5%88%A0%E9%99%A4%E9%95%9C%E5%83%8F">1、删除镜像</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C%E5%AE%B9%E5%99%A8container">(二)容器(container)</a>
+<ul>
+<li><a href="#1-%E5%88%9B%E5%BB%BA%E5%AE%B9%E5%99%A8">1、创建容器</a></li>
+<li><a href="#2-%E5%88%A0%E9%99%A4%E5%AE%B9%E5%99%A8">2、删除容器</a></li>
+<li><a href="#3-%E8%BF%9B%E5%85%A5%E5%AE%B9%E5%99%A8%E7%9A%84%E4%BC%AA%E7%BB%88%E7%AB%AF">3、进入容器的伪终端</a></li>
+<li><a href="#4-%E6%9F%A5%E7%9C%8B%E6%89%80%E6%9C%89%E5%AE%B9%E5%99%A8">4、查看所有容器</a></li>
+<li><a href="#5-%E5%90%AF%E5%8A%A8%E5%AE%B9%E5%99%A8">5、启动容器</a></li>
+<li><a href="#6-%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8D%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8">6、查看当前运行的容器</a></li>
+<li><a href="#7-%E8%BF%9B%E5%85%A5%E5%AE%B9%E5%99%A8">7、进入容器</a></li>
+<li><a href="#8-%E6%8B%B7%E8%B4%9D%E6%96%87%E4%BB%B6%E5%88%B0%E5%AE%B9%E5%99%A8%E4%B8%8D%E6%8E%A8%E8%8D%90%E4%BD%BF%E7%94%A8">8、拷贝文件到容器(不推荐使用)</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89%E5%8D%B7volumes">(三)卷(volumes)</a>
+<ul>
+<li><a href="#1-%E5%88%9B%E5%BB%BAvolume">1、创建volume</a></li>
+<li><a href="#2-%E5%88%97%E5%87%BA%E6%89%80%E6%9C%89volume">2、列出所有volume</a></li>
+<li><a href="#3-%E6%9F%A5%E7%9C%8B%E6%9F%90%E4%B8%AAvolume">3、查看某个volume</a></li>
+<li><a href="#4-%E6%8C%82%E8%BD%BDvolume%E5%88%B0container">4、挂载volume到container</a></li>
+<li><a href="#5-%E6%B8%85%E7%90%86">5、清理</a></li>
+<li><a href="#6-%E9%AA%8C%E8%AF%81%E7%BB%91%E5%AE%9A">6、验证绑定</a></li>
+<li><a href="#7-%E6%9F%A5%E7%9C%8B%E6%8C%82%E8%BD%BD%E7%9B%AE%E5%BD%95">7、查看挂载目录</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B%E5%BF%AB%E9%80%9F%E6%B8%85%E7%90%86%E5%AE%B9%E5%99%A8%E5%92%8C%E5%8D%B7">(四)快速清理容器和卷</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%94-dockerfile">五、Dockerfile</a>
+<ul>
+<li><a href="#%E4%B8%80-dockerfile%E7%9A%84%E6%8C%87%E4%BB%A4">(一) Dockerfile的指令</a>
+<ul>
+<li><a href="#1-from">1、FROM</a></li>
+<li><a href="#2-maintainer">2、MAINTAINER</a></li>
+<li><a href="#3-run">3、RUN</a></li>
+<li><a href="#4-cmd">4、CMD</a></li>
+<li><a href="#5-expose">5、EXPOSE</a></li>
+<li><a href="#6-env">6、ENV</a></li>
+<li><a href="#7-add">7、ADD</a></li>
+<li><a href="#8-copy">8、COPY</a></li>
+<li><a href="#9-entrypoint">9、ENTRYPOINT</a></li>
+<li><a href="#10-volume">10、VOLUME</a></li>
+<li><a href="#11-user">11、USER</a></li>
+<li><a href="#12-workdir">12、WORKDIR</a></li>
+<li><a href="#13-healthcheck">13、HEALTHCHECK</a></li>
+<li><a href="#14-arg">14、ARG</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8Cbuild%E9%95%9C%E5%83%8F%E5%91%BD%E4%BB%A4">(二)Build镜像命令</a></li>
+<li><a href="#%E4%B8%89%E9%83%A8%E7%BD%B2%E8%BF%87%E7%A8%8B">(三)部署过程</a>
+<ul>
+<li><a href="#1-%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BD%91%E7%BB%9C">1、自定义网络</a></li>
+<li><a href="#2-%E5%88%9B%E5%BB%BA%E6%89%80%E9%9C%80%E5%AE%B9%E5%99%A8a">2、创建所需容器A</a></li>
+<li><a href="#3-%E5%88%9B%E5%BB%BA%E6%89%80%E9%9C%80%E5%AE%B9%E5%99%A8b">3、创建所需容器B</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E5%85%AD-docker%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93">六、docker镜像仓库</a>
+<ul>
+<li><a href="#%E4%B8%80%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93">(一)搭建私有镜像仓库</a>
+<ul>
+<li><a href="#1-%E4%B8%8B%E8%BD%BDregistry%E9%95%9C%E5%83%8F%E5%B9%B6%E5%90%AF%E5%8A%A8">1、下载registry镜像并启动</a></li>
+<li><a href="#2-%E6%9F%A5%E7%9C%8B%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93%E4%B8%AD%E6%89%80%E6%9C%89%E9%95%9C%E5%83%8F">2、查看镜像仓库中所有镜像</a></li>
+<li><a href="#3-%E9%85%8D%E7%BD%AE%E7%A7%81%E6%9C%89%E4%BB%93%E5%BA%93%E4%BF%A1%E4%BB%BB">3、配置私有仓库信任</a></li>
+<li><a href="#4-%E6%89%93%E6%A0%87%E7%AD%BE">4、打标签</a></li>
+<li><a href="#5-%E4%B8%8A%E4%BC%A0">5、上传</a></li>
+<li><a href="#6-%E4%B8%8B%E8%BD%BD">6、下载</a></li>
+<li><a href="#7-%E5%88%97%E5%87%BA%E9%95%9C%E5%83%8F%E8%A1%A8">7、列出镜像表</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8Cdocker-hub%E5%85%AC%E5%85%B1%E4%BB%93%E5%BA%93%E7%9A%84%E4%BD%BF%E7%94%A8">(二)Docker Hub公共仓库的使用</a>
+<ul>
+<li><a href="#1-%E6%B3%A8%E5%86%8C%E8%B4%A6%E5%8F%B7">1、注册账号</a></li>
+<li><a href="#2-%E7%99%BB%E5%BD%95docker-hub">2、登录Docker Hub</a></li>
+<li><a href="#3-%E9%95%9C%E5%83%8F%E6%89%93%E6%A0%87%E7%AD%BE">3、镜像打标签</a></li>
+<li><a href="#4-%E4%B8%8A%E4%BC%A0">4、上传</a></li>
+<li><a href="#5-%E6%90%9C%E7%B4%A2">5、搜索</a></li>
+<li><a href="#6-%E4%B8%8B%E8%BD%BD-2">6、下载</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E4%B8%83-%E5%AE%9E%E6%88%98">七、实战</a>
+<ul>
+<li><a href="#%E4%B8%80%E6%90%AD%E5%BB%BAflask%E7%BD%91%E7%AB%99">(一)搭建flask网站</a>
+<ul>
+<li><a href="#1-dockerfile">1、Dockerfile</a></li>
+</ul>
+</li>
+<li><a href="#3-%E9%9C%80%E8%A6%81%E7%9A%84%E5%AE%B9%E5%99%A8">3、需要的容器</a></li>
+<li><a href="#%E4%B8%80mysql">(一)mysql</a>
+<ul>
+<li><a href="#1-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">1、配置文件</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8Credis">(二)redis</a>
+<ul>
+<li><a href="#1-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-2">1、配置文件</a></li>
+<li><a href="#2-%E5%AE%89%E8%A3%85">2、安装</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89python%E7%9A%84flaskonekkisite">(三)python的flask(OnekkiSite)</a>
+<ul>
+<li><a href="#2-%E5%88%9B%E5%BB%BA%E5%AE%B9%E5%99%A8">2、创建容器</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9Bnginx">(四)nginx</a>
+<ul>
+<li><a href="#%E5%AE%89%E8%A3%85">安装</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://onekki.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>
